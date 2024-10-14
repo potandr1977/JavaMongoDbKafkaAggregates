@@ -1,6 +1,5 @@
 package com.potandr1977.mongoPoc.persons;
 
-import an.awesome.pipelinr.repack.com.google.common.base.Splitter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +13,7 @@ import java.util.*;
 @Setter(AccessLevel.PROTECTED)
 public class Person {
     @Id
-    private UUID id;
+    private String id;
 
     private String name;
 
@@ -28,8 +27,9 @@ public class Person {
         return Collections.unmodifiableList(accounts);
     };
 
-    public static Person Create(UUID id, String name, String inn, List<Account> accounts)
+    public static Person create(String name, String inn, List<Account> accounts)
     {
+        var id = "Person-"+UUID.randomUUID();
         var person = new Person();
         person.setId(id);
         person.setName(name);
@@ -41,7 +41,7 @@ public class Person {
         return person;
     }
 
-    public void SetName(String newName)
+    public void setName(String newName)
     {
         var digits = "0123456789".toCharArray();
         var newNameChars = newName.toCharArray();
@@ -56,7 +56,7 @@ public class Person {
         this.name = newName;
     }
 
-    public void SetInn(String newInn)
+    public void setInn(String newInn)
     {
         var digits = "0123456789".toCharArray();
         var newInnChars = newInn.toCharArray();
@@ -70,7 +70,7 @@ public class Person {
 
         inn = newInn;
     }
-    public void AddAccount(Account account)
+    public void addAccount(Account account)
     {
         if (accounts.stream().anyMatch(x -> x.getName().equals(account.getName())))
         {

@@ -25,7 +25,8 @@ public class Account extends Entity {
         return Collections.unmodifiableList(payments);
     }
 
-    public static Account Create(UUID id, String name, Date createDate, List<Payment> payments){
+    public static Account create(String name, Date createDate, List<Payment> payments){
+        var id = "Account-"+UUID.randomUUID();
         var account = new Account();
         account.setId(id);
         account.setName(name);

@@ -9,7 +9,7 @@ import java.util.UUID;
 @Setter(AccessLevel.PROTECTED)
 public class Entity {
 
-    private UUID Id;
+    private String Id;
 
     private Long timeStamp;
 }
