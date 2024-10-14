@@ -23,7 +23,7 @@ public class Payment extends Entity {
 
     }
 
-    public static Payment Create(UUID id,BigDecimal sum, Date createDate, PaymentTypeEnum type)
+    public static Payment create(UUID id,BigDecimal sum, Date createDate, PaymentTypeEnum type)
     {
         var payment = new Payment();
         payment.setId(id);
