@@ -14,7 +14,14 @@ public class PersonController {
     @Autowired
     PersonService personService;
 
-    @GetMapping("/Persons")
+    @GetMapping("/ping")
+    @ResponseStatus(HttpStatus.OK)
+    public String getAllPersons() {
+        return "ok";
+    }
+
+
+    @GetMapping("/persons")
     @ResponseStatus(HttpStatus.OK)
     public Flux<Person> getAllPersons(@RequestParam(required = false) String title) {
         if (title == null)
@@ -23,37 +30,37 @@ public class PersonController {
             return personService.findByNameContaining(title);
     }
 
-    @GetMapping("/Persons/{id}")
+    @GetMapping("/persons/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Mono<Person> getPersonById(@PathVariable("id") String id) {
         return personService.findById(id);
     }
 
-    @PostMapping("/Persons")
+    @PostMapping("/persons")
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<Person> createPerson(@RequestBody Person person) {
-        return personService.save(Person.create(person.getName(), person.getInn(),null));
+    public Mono<Person> createPerson(@RequestBody PersonDto personDto) {
+        return personService.save(Person.create(personDto.name, personDto.inn,null));
     }
 
-    @PutMapping("/Persons/{id}")
+    @PutMapping("/persons/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Mono<Person> updatePerson(@PathVariable("id") String id, @RequestBody Person Person) {
         return personService.update(id, Person);
     }
 
-    @DeleteMapping("/Persons/{id}")
+    @DeleteMapping("/persons/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> deletePerson(@PathVariable("id") String id) {
         return personService.deleteById(id);
     }
 
-    @DeleteMapping("/Persons")
+    @DeleteMapping("/persons")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> deleteAllPersons() {
         return personService.deleteAll();
     }
 
-    @GetMapping("/Persons/name")
+    @GetMapping("/persons/name")
     @ResponseStatus(HttpStatus.OK)
     public Flux<Person> findByNameContaining(@RequestParam String name) {
         return personService.findByNameContaining(name);

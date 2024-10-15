@@ -23,7 +23,7 @@ public class Person {
 
     private List<Account> accounts = new ArrayList<Account>();
 
-    public List<Account> getAccount(){
+    public List<Account> getAccounts(){
         return Collections.unmodifiableList(accounts);
     };
 
@@ -43,33 +43,31 @@ public class Person {
 
     public void setName(String newName)
     {
-        var digits = "0123456789".toCharArray();
-        var newNameChars = newName.toCharArray();
-        var digitsSet = Set.of(digits);
-        var newNameSet = new HashSet<>(Set.of(newNameChars));
-        newNameSet.retainAll(digitsSet);
+        var digits = "0123456789";
+        var intersection = GetStringIntersection(digits, newName);
 
-        if ((long) newNameSet.size() != 0) {
+        /*
+        if (intersection.length > 0) {
             throw new IllegalArgumentException("В имени должны быть только буквы");
         }
-
+        */
         this.name = newName;
     }
 
     public void setInn(String newInn)
     {
-        var digits = "0123456789".toCharArray();
-        var newInnChars = newInn.toCharArray();
-        var digitsSet = Set.of(digits);
-        var newInnSet = new HashSet<>(Set.of(newInnChars));
-        newInnSet.removeAll(digitsSet);
+        var digits = "0123456789";
+        var intersection = GetStringIntersection(digits, newInn);
 
-        if ((long) newInnSet.size() !=0) {
-            throw new IllegalArgumentException("В имени должны быть только буквы");
+        /*
+        if (intersection.length < digits.length()) {
+            throw new IllegalArgumentException("В инн должны быть только цифры");
         }
+         */
 
         inn = newInn;
     }
+
     public void addAccount(Account account)
     {
         if (accounts.stream().anyMatch(x -> x.getName().equals(account.getName())))
@@ -78,5 +76,23 @@ public class Person {
         }
 
         accounts.add(account);
+    }
+
+    private Character[] GetStringIntersection(String s1, String s2)
+    {
+        char[] charArray1 = s1.toCharArray();
+        char[] charArray2 = s2.toCharArray();
+        HashSet<Character> h1 = new HashSet<Character>(), h2 = new HashSet<Character>();
+        for(int i = 0; i < charArray1.length; i++)
+        {
+            h1.add(charArray1[i]);
+        }
+        for(int i = 0; i < charArray2.length; i++)
+        {
+            h2.add(charArray2[i]);
+        }
+        h1.retainAll(h2);
+        
+        return h1.toArray(new Character[0]);
     }
 }
