@@ -1,13 +1,18 @@
 package com.potandr1977.mongoPoc.persons;
 
+import an.awesome.pipelinr.Pipeline;
+import an.awesome.pipelinr.Pipelinr;
 import com.potandr1977.mongoPoc.persons.dtos.AddAccountDto;
 import com.potandr1977.mongoPoc.persons.dtos.PersonDto;
 import com.potandr1977.mongoPoc.persons.entities.Person;
+import com.potandr1977.mongoPoc.persons.handlers.PingCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.stream.Stream;
 
 //@CrossOrigin(origins = "http://localhost:8099")
 @RestController
@@ -16,11 +21,13 @@ public class PersonController {
 
     @Autowired
     PersonService personService;
+    @Autowired
+    Pipeline pipeline;
 
     @GetMapping("/ping")
     @ResponseStatus(HttpStatus.OK)
     public String getPing() {
-        return "ok";
+        return pipeline.send(new PingCommand("ping"));
     }
 
     @GetMapping("/persons/all")
