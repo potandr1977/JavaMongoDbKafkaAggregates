@@ -1,15 +1,14 @@
 package com.potandr1977.mongoPoc.persons;
 
-import com.potandr1977.mongoPoc.persons.models.Account;
-import com.potandr1977.mongoPoc.persons.models.Payment;
-import com.potandr1977.mongoPoc.persons.models.Person;
-import lombok.val;
+import com.potandr1977.mongoPoc.persons.entities.Account;
+import com.potandr1977.mongoPoc.persons.entities.Payment;
+import com.potandr1977.mongoPoc.persons.entities.Person;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -59,7 +58,7 @@ public class PersonService {
         return personRepository.findById(personId).flatMap(person ->{
             person.addAccount(Account.create(accountName,null));
 
-            return personRepository.save(person).then(Mono.just(person));
+            return personRepository.save(person);
         });
     }
 
@@ -67,7 +66,13 @@ public class PersonService {
        return personRepository.findById(personId).flatMap(person ->{
            person.addPayment(accountId, payment);
 
-           return personRepository.save(person).then(Mono.just(person));
+           return personRepository.save(person);
         });
+    }
+
+    @KafkaListener(topics="PersonTopic", groupId="business-group")
+    public void consumeKafka(String message)
+    {
+
     }
 }

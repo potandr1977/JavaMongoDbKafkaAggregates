@@ -1,4 +1,4 @@
-package com.potandr1977.mongoPoc.persons.models;
+package com.potandr1977.mongoPoc.persons.entities;
 
 import com.potandr1977.mongoPoc.primitives.Entity;
 import lombok.AccessLevel;

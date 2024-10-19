@@ -1,4 +1,4 @@
-package com.potandr1977.mongoPoc.persons.models;
+package com.potandr1977.mongoPoc.persons.entities;
 
 public enum PaymentTypeEnum{
     SALARY(1),
