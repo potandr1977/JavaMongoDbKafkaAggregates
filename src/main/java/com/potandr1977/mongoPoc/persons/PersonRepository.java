@@ -1,5 +1,6 @@
 package com.potandr1977.mongoPoc.persons;
 
+import com.potandr1977.mongoPoc.persons.models.Person;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Flux;
 

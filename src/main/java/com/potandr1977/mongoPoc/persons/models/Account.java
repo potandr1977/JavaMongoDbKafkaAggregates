@@ -1,4 +1,4 @@
-package com.potandr1977.mongoPoc.persons;
+package com.potandr1977.mongoPoc.persons.models;
 
 import com.potandr1977.mongoPoc.primitives.Entity;
 import lombok.AccessLevel;
@@ -8,35 +8,34 @@ import lombok.Setter;
 import java.util.*;
 
 @Getter
-@Setter(AccessLevel.PROTECTED)
+@Setter(AccessLevel.PRIVATE)
 public class Account extends Entity {
 
     private String name;
 
-    private Date createDate;
-
     private List<Payment> payments = new ArrayList<Payment>();
 
-    protected Account(){
+    private Account(){
 
+    }
+
+    private Account(String id, String name, List<Payment> payments)
+    {
+        this.setId(id);
+        this.setName(name);
+        if (payments != null) {
+            this.payments.addAll(payments);
+        }
     }
 
     public List<Payment> getPayments(){
         return Collections.unmodifiableList(payments);
     }
 
-    public static Account create(String name, Date createDate, List<Payment> payments){
+    public static Account create(String name, List<Payment> payments){
         var id = "Account-"+UUID.randomUUID();
-        var account = new Account();
-        account.setId(id);
-        account.setName(name);
-        account.setCreateDate(createDate);
 
-        if (payments != null) {
-            account.payments.addAll(payments);
-        }
-
-        return account;
+        return new Account(id, name, payments);
     }
 
     public void AddPayment(Payment payment){

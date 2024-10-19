@@ -1,4 +1,4 @@
-package com.potandr1977.mongoPoc.persons;
+package com.potandr1977.mongoPoc.persons.models;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -10,7 +10,8 @@ import java.util.*;
 
 @Document(collection="persons")
 @Getter
-@Setter(AccessLevel.PROTECTED)
+@Setter(AccessLevel.PRIVATE)
+//@AllArgsConstructor
 public class Person {
     @Id
     private String id;
@@ -19,26 +20,27 @@ public class Person {
 
     private String inn;
 
-    private Date createDate;
-
     private List<Account> accounts = new ArrayList<Account>();
 
     public List<Account> getAccounts(){
         return Collections.unmodifiableList(accounts);
     };
 
+    private Person(String id, String name, String inn, List<Account> accounts)
+    {
+        setId(id);
+        setName(name);
+        setInn(inn);
+        if (accounts != null) {
+            this.accounts.addAll(accounts);
+        }
+    }
+
     public static Person create(String name, String inn, List<Account> accounts)
     {
         var id = "Person-"+UUID.randomUUID();
-        var person = new Person();
-        person.setId(id);
-        person.setName(name);
-        person.setInn(inn);
-        if (accounts != null) {
-            person.accounts.addAll(accounts);
-        }
 
-        return person;
+        return new Person(id, name,inn,accounts);
     }
 
     public void setName(String newName)
@@ -70,12 +72,24 @@ public class Person {
 
     public void addAccount(Account account)
     {
-        if (accounts.stream().anyMatch(x -> x.getName().equals(account.getName())))
+        if (accounts.stream().anyMatch(x -> x.getId().equals(account.getId())))
         {
             throw new IllegalArgumentException("Такой счёт уже существует");
         }
 
         accounts.add(account);
+    }
+
+    public void addPayment(String accountId, Payment payment)
+    {
+        var accountOptional = accounts.stream().filter(x -> x.getId().equals(accountId)).findFirst();
+        if (accountOptional.isEmpty())
+        {
+            throw new IllegalArgumentException("Такого счёта не существует");
+        }
+        var account = accountOptional.get();
+
+        account.getPayments().add(payment);
     }
 
     private Character[] GetStringIntersection(String s1, String s2)

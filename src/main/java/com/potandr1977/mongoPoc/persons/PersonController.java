@@ -1,5 +1,8 @@
 package com.potandr1977.mongoPoc.persons;
 
+import com.potandr1977.mongoPoc.persons.dtos.AddAccountDto;
+import com.potandr1977.mongoPoc.persons.dtos.PersonDto;
+import com.potandr1977.mongoPoc.persons.models.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,14 +19,19 @@ public class PersonController {
 
     @GetMapping("/ping")
     @ResponseStatus(HttpStatus.OK)
-    public String getAllPersons() {
+    public String getPing() {
         return "ok";
     }
 
+    @GetMapping("/persons/all")
+    @ResponseStatus(HttpStatus.OK)
+    public Flux<Person> getAllPersons() {
+        return personService.findAll();
+    }
 
     @GetMapping("/persons")
     @ResponseStatus(HttpStatus.OK)
-    public Flux<Person> getAllPersons(@RequestParam(required = false) String title) {
+    public Flux<Person> getPersons(@RequestParam(required = false) String title) {
         if (title == null)
             return personService.findAll();
         else
@@ -39,13 +47,13 @@ public class PersonController {
     @PostMapping("/persons")
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<Person> createPerson(@RequestBody PersonDto personDto) {
-        return personService.save(Person.create(personDto.name, personDto.inn,null));
+        return personService.save(Person.create(personDto.name(), personDto.inn(),null));
     }
 
-    @PutMapping("/persons/{id}")
+    @PutMapping("/persons")
     @ResponseStatus(HttpStatus.OK)
-    public Mono<Person> updatePerson(@PathVariable("id") String id, @RequestBody Person Person) {
-        return personService.update(id, Person);
+    public Mono<Person> updatePerson(@RequestBody Person Person) {
+        return personService.update(Person);
     }
 
     @DeleteMapping("/persons/{id}")
@@ -64,5 +72,11 @@ public class PersonController {
     @ResponseStatus(HttpStatus.OK)
     public Flux<Person> findByNameContaining(@RequestParam String name) {
         return personService.findByNameContaining(name);
+    }
+
+    @PostMapping("/persons/addaccount")
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<Person> addAccount(@RequestBody AddAccountDto addAccountDto) {
+        return personService.AddAccount(addAccountDto.personId(),addAccountDto.accountName());
     }
 }

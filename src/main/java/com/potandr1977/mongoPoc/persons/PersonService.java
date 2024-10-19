@@ -1,10 +1,15 @@
 package com.potandr1977.mongoPoc.persons;
 
+import com.potandr1977.mongoPoc.persons.models.Account;
+import com.potandr1977.mongoPoc.persons.models.Payment;
+import com.potandr1977.mongoPoc.persons.models.Person;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -14,7 +19,9 @@ public class PersonService {
     private PersonRepository personRepository;
 
     public Flux<Person> findAll(){
-        return personRepository.findAll();
+        return personRepository.findAll().doOnError(err-> {
+            var m =  err.getMessage();
+        });
     }
 
     public Mono<Person> findById(String id){
@@ -29,12 +36,11 @@ public class PersonService {
         return personRepository.save(person);
     }
 
-    public Mono<Person> update(String id, Person Person) {
-        return personRepository.findById(id).map(Optional::of).defaultIfEmpty(Optional.empty())
+    public Mono<Person> update(Person person) {
+        return personRepository.findById(person.getId()).map(Optional::of).defaultIfEmpty(Optional.empty())
                 .flatMap(optionalPerson -> {
                     if (optionalPerson.isPresent()) {
-                        //Person.setId(id);
-                        return personRepository.save(Person);
+                        return personRepository.save(person);
                     }
 
                     return Mono.empty();
@@ -47,5 +53,21 @@ public class PersonService {
 
     public Mono<Void> deleteAll() {
         return personRepository.deleteAll();
+    }
+
+    public Mono<Person> AddAccount(String personId, String accountName){
+        return personRepository.findById(personId).flatMap(person ->{
+            person.addAccount(Account.create(accountName,null));
+
+            return personRepository.save(person).then(Mono.just(person));
+        });
+    }
+
+    public Mono<Person> addPayment(String personId, String accountId, Payment payment){
+       return personRepository.findById(personId).flatMap(person ->{
+           person.addPayment(accountId, payment);
+
+           return personRepository.save(person).then(Mono.just(person));
+        });
     }
 }

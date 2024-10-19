@@ -1,4 +1,4 @@
-package com.potandr1977.mongoPoc.persons;
+package com.potandr1977.mongoPoc.persons.models;
 
 import com.potandr1977.mongoPoc.primitives.Entity;
 import lombok.AccessLevel;
@@ -15,8 +15,6 @@ public class Payment extends Entity {
 
     private BigDecimal sum;
 
-    private Date createDate;
-
     private PaymentTypeEnum type;
 
     protected Payment(){
@@ -29,7 +27,6 @@ public class Payment extends Entity {
         var payment = new Payment();
         payment.setId(id);
         payment.setSum(sum);
-        payment.setCreateDate(createDate);
 
         return payment;
     }
