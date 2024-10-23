@@ -6,8 +6,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
+import org.springframework.kafka.config.KafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,43 +17,33 @@ import java.util.Map;
 @Configuration
 @EnableKafka
 public class KafkaConfig {
-    // Function to establish
-    // connection between spring
-    // application and kafka server
+
     @Bean
-    public ConsumerFactory<String, String> consumerFactory()
-    {
-
-        // HashMap to store the configurations
-        Map<String, Object> map = new HashMap<>();
-
-        // put the host IP in the map
-        map.put(ConsumerConfig
-                        .BOOTSTRAP_SERVERS_CONFIG,
-                "127.0.0.1:9092");
-
-        // put the group ID in the map
-        map.put(ConsumerConfig
-                        .GROUP_ID_CONFIG,
-                "id");
-        map.put(ConsumerConfig
-                        .KEY_DESERIALIZER_CLASS_CONFIG,
-                StringDeserializer.class);
-        map.put(ConsumerConfig
-                        .VALUE_DESERIALIZER_CLASS_CONFIG,
-                StringDeserializer.class);
-
-        return new DefaultKafkaConsumerFactory<>(map);
+    KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, String>>
+    kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory());
+        factory.setConcurrency(3);
+        factory.getContainerProperties().setPollTimeout(3000);
+        return factory;
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, String>  kafkaListner()
-    {
-        ConcurrentKafkaListenerContainerFactory<String,
-                String>
-                obj
-                = new ConcurrentKafkaListenerContainerFactory<>();
-        obj.setConsumerFactory(consumerFactory());
-        return obj;
+    public ConsumerFactory<String, String> consumerFactory() {
+        return new DefaultKafkaConsumerFactory<>(consumerConfigs());
+    }
+
+    @Bean
+    public Map<String, Object> consumerConfigs() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:19092");
+
+        // put the group ID in the map
+        props.put(ConsumerConfig.GROUP_ID_CONFIG,"id");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,StringDeserializer.class);
+
+        return props;
     }
 }

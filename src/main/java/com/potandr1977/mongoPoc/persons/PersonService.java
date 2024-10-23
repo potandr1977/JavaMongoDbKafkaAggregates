@@ -3,14 +3,18 @@ package com.potandr1977.mongoPoc.persons;
 import com.potandr1977.mongoPoc.persons.entities.Account;
 import com.potandr1977.mongoPoc.persons.entities.Payment;
 import com.potandr1977.mongoPoc.persons.entities.Person;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
+@Component
+@Slf4j
 @Service
 public class PersonService {
 
@@ -70,9 +74,10 @@ public class PersonService {
         });
     }
 
-    @KafkaListener(topics="PersonTopic", groupId="business-group")
-    public void consumeKafka(String message)
-    {
-
+/*
+    @KafkaListener(topics="save-person-topic", groupId="java-service-group")
+    void listen(String data) {
+        var m = data;
     }
+ */
 }
