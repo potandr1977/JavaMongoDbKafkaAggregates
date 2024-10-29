@@ -1,5 +1,6 @@
 package com.potandr1977.mongoPoc.persons.entities;
 
+import com.potandr1977.mongoPoc.annotations.MongoPocEntity;
 import com.potandr1977.mongoPoc.primitives.Entity;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import java.util.UUID;
 
 @Getter
 @Setter(AccessLevel.PROTECTED)
+@MongoPocEntity(name="pay")
 public class Payment extends Entity {
 
     private BigDecimal sum;
